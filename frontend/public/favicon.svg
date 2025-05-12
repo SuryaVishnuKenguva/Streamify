@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <!-- Background circle with gradient -->
+  <circle cx="12" cy="12" r="11" fill="url(#streamGradient)" />
+  
+  <!-- Ship wheel -->
+  <circle cx="12" cy="12" r="7" stroke="#ffffff" stroke-width="1.5" fill="none" />
+  <path d="M12 5v2" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" />
+  <path d="M12 17v2" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" />
+  <path d="M5 12h2" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" />
+  <path d="M17 12h2" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" />
+  <path d="m7.4 7.4 1.4 1.4" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" />
+  <path d="m15.2 15.2 1.4 1.4" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" />
+  <path d="m7.4 16.6 1.4-1.4" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" />
+  <path d="m15.2 8.8 1.4-1.4" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" />
+  <circle cx="12" cy="12" r="2.5" stroke="#ffffff" stroke-width="1.5" fill="none" />
+  
+  <!-- Streaming waves -->
+  <path d="M2 12c2-1.5 4-1.5 6 0s4 1.5 6 0 4-1.5 6 0" stroke="#ffffff" stroke-width="1" stroke-opacity="0.6" stroke-linecap="round" />
+  <path d="M2 15c2-1.5 4-1.5 6 0s4 1.5 6 0 4-1.5 6 0" stroke="#ffffff" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round" />
+  
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="streamGradient" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0ea5e9" />
+    </linearGradient>
+  </defs>
+</svg>
