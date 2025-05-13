@@ -7,7 +7,11 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      screens: {
+        'xs': '480px', 
+      },
+    },
   },
   plugins: [daisyui],
   daisyui: {
@@ -41,9 +45,6 @@ export default {
       "night",
       "coffee",
       "winter",
-      "dim",
-      "nord",
-      "sunset",
     ],
   },
 }

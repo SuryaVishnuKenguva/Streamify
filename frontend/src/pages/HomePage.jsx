@@ -13,7 +13,16 @@ import NoFriends from "../components/NoFriends";
 
 const HomePage = () => {
   const queryClient = useQueryClient();
-  const [outgoingRequestsIds, setOutgoingRequestsIds ] = useState(new Set());
+  const [outgoingRequestsIds, setOutgoingRequestsIds] = useState(new Set());
+  const [loadedImages, setLoadedImages] = useState({});
+
+  // Handle image loading
+  const handleImageLoad = (userId) => {
+    setLoadedImages(prev => ({
+      ...prev,
+      [userId]: true
+    }));
+  };
 
   const { data: friends = [], isLoading: loadingFriends } = useQuery({
     queryKey: ["friends"],
@@ -46,11 +55,17 @@ const HomePage = () => {
     }
   }, [outgoingRequests]);
 
+  // Capitalize function moved to the top for reuse
+  const capitalize = (str) => {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
-      <div className="container mx-auto space-y-10">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
+    <div className="p-3 sm:p-6 lg:p-8">
+      <div className="container mx-auto space-y-6 sm:space-y-10">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
             Your Friends
           </h2>
           <Link to="/notifications" className="btn btn-outline btn-sm">
@@ -60,13 +75,13 @@ const HomePage = () => {
         </div>
 
         {loadingFriends ? (
-          <div className="flex justify-center py-12">
+          <div className="flex justify-center py-8 sm:py-12">
             <span className="loading loading-spinner loading-lg"></span>
           </div>
         ) : friends.length === 0 ? (
           <NoFriends />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
             {friends.map((friend) => (
               <FriendCard key={friend._id} friend={friend} />
             ))}
@@ -74,50 +89,65 @@ const HomePage = () => {
         )}
 
         <section>
-          <div className="mb-6 sm:mb-8">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="mb-4 sm:mb-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
               <div>
-                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
                   Meet New Learners
                 </h2>
-                <p className="opacity-70">
-                  Discover perfect language exchange partners based on your
-                  profile
+                <p className="opacity-70 text-sm sm:text-base">
+                  Discover perfect language exchange partners based on your profile
                 </p>
               </div>
             </div>
           </div>
 
           {loadingUsers ? (
-            <div className="flex justify-center py-12">
+            <div className="flex justify-center py-8 sm:py-12">
               <span className="loading loading-spinner loading-lg"></span>
             </div>
           ) : recommendedUsers.length == 0 ? (
-            <div className="card bg-base-200 p-6 text-center">
+            <div className="card bg-base-200 p-4 sm:p-6 text-center">
               <h3 className="font-semibold text-lg mb-2">
                 No Recommendations available
               </h3>
-              <p className="text-base-content opacity-70">
+              <p className="text-base-content opacity-70 text-sm sm:text-base">
                 Check back later for new language partners!
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
               {recommendedUsers.map((user) => {
                 const hasRequestBeenSent = outgoingRequestsIds.has(user._id);
+                const isImageLoaded = loadedImages[user._id];
                 return (
                   <div
                     key={user._id}
                     className="card bg-base-200 hover:shadow-lg transition-all duration-300"
                   >
-                    <div className="card-body p-5 space-y-4">
-                      <div className="flex items-center gap-3">
-                        <div className="avatar size-16 rounded-full">
-                          <img src={user.profilePic} alt={user.fullName} />
+                    <div className="card-body p-3 sm:p-5 space-y-3 sm:space-y-4">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="avatar size-12 sm:size-16 rounded-full bg-base-300 relative">
+                          {!isImageLoaded && (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <span className="loading loading-spinner loading-sm"></span>
+                            </div>
+                          )}
+                          <img 
+                            src={user.profilePic} 
+                            alt={user.fullName} 
+                            onLoad={() => handleImageLoad(user._id)}
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = "https://avatar.iran.liara.run/public/1.png";
+                              handleImageLoad(user._id);
+                            }}
+                            className={`rounded-full ${isImageLoaded ? "opacity-100" : "opacity-0"}`}
+                          />
                         </div>
 
                         <div>
-                          <h3 className="font-semibold text-lg">
+                          <h3 className="font-semibold text-base sm:text-lg">
                             {user.fullName}
                           </h3>
                           {user.location && (
@@ -129,31 +159,31 @@ const HomePage = () => {
                         </div>
                       </div>
 
-                      <div className="flex flex-wrap gap-1.5">
-                        <span className="badge badge-secondary">
+                      <div className="flex flex-wrap gap-1 sm:gap-1.5">
+                        <span className="badge badge-secondary text-xs">
                           {getLanguageFlag(user.nativeLanguage)}
-                          Native: {capitalize(user.nativeLanguage)}
+                          <span className="hidden xs:inline">Native:</span> {capitalize(user.nativeLanguage)}
                         </span>
 
-                        <span className="badge badge-outline">
+                        <span className="badge badge-outline text-xs">
                           {getLanguageFlag(user.learningLanguage)}
-                          Learning: {capitalize(user.learningLanguage)}
+                          <span className="hidden xs:inline">Learning:</span> {capitalize(user.learningLanguage)}
                         </span>
                       </div>
 
-                      {user.bio && <p className="text-sm opacity-70">{user.bio}</p>}
+                      {user.bio && <p className="text-xs sm:text-sm opacity-70 line-clamp-2">{user.bio}</p>}
 
-                      <button className={`btn w-full mt-2 ${
+                      <button className={`btn btn-sm sm:btn-md w-full mt-1 sm:mt-2 ${
                         hasRequestBeenSent ? "btn-disabled" : "btn-primary"}`} onClick={() => sendRequestMutation(user._id)}
                         disabled={hasRequestBeenSent || isPending}>
                           {hasRequestBeenSent ? (
                             <>
-                            <CheckCircleIcon className="size-4 mr-2"/>
+                            <CheckCircleIcon className="size-3 sm:size-4 mr-1 sm:mr-2"/>
                             Request Sent
                             </>
                           ) : (
                             <>
-                            <UserPlusIcon className="size-4 mr-2"/>
+                            <UserPlusIcon className="size-3 sm:size-4 mr-1 sm:mr-2"/>
                             Send Friend Request
                             </>
                           )}
@@ -171,5 +201,3 @@ const HomePage = () => {
 };
 
 export default HomePage;
-
-const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
