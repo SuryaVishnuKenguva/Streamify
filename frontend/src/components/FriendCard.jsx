@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { LANGUAGE_TO_FLAG } from "../constants/index.js";
 import { Link } from "react-router";
+import ImageLoader from "./ImageLoader.jsx";
 
 const FriendCard = ({ friend }) => {
-  const [imageLoaded, setImageLoaded] = useState(false);
-
   // Function to capitalize first letter
   const capitalize = (str) => {
     if (!str) return '';
@@ -16,22 +15,11 @@ const FriendCard = ({ friend }) => {
       <div className="card-body p-3 sm:p-4">
         {/* USER INFO */}
         <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-          <div className="avatar size-10 sm:size-12 bg-base-300 rounded-full relative">
-            {!imageLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="loading loading-spinner loading-xs"></span>
-              </div>
-            )}
-            <img 
+          <div className="avatar size-10 sm:size-12 rounded-full relative overflow-hidden">
+            <ImageLoader 
               src={friend.profilePic} 
               alt={friend.fullName} 
-              className={`rounded-full ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-              onLoad={() => setImageLoaded(true)}
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = "https://avatar.iran.liara.run/public/1.png";
-                setImageLoaded(true);
-              }}
+              className="rounded-full"
             />
           </div>
           <h3 className="font-semibold truncate text-sm sm:text-base">{friend.fullName}</h3>
@@ -40,12 +28,12 @@ const FriendCard = ({ friend }) => {
         <div className="flex flex-wrap gap-1 sm:gap-1.5 mb-2 sm:mb-3">
           <span className="badge badge-secondary text-xs">
             {getLanguageFlag(friend.nativeLanguage)}
-            <span className="hidden xs:inline">Native:</span> {capitalize(friend.nativeLanguage)}
+            <span className="hidden xs:inline">Native: </span> {capitalize(friend.nativeLanguage)}
           </span>
 
           <span className="badge badge-outline text-xs">
             {getLanguageFlag(friend.learningLanguage)}
-            <span className="hidden xs:inline">Learning:</span> {capitalize(friend.learningLanguage)}
+            <span className="hidden xs:inline">Learning: </span> {capitalize(friend.learningLanguage)}
           </span>
         </div>
 

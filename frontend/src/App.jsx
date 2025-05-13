@@ -7,6 +7,7 @@ import NotificationsPage from "./pages/NotificationsPage.jsx";
 import CallPage from "./pages/CallPage.jsx";
 import ChatPage from "./pages/ChatPage.jsx";
 import OnboardingPage from "./pages/OnboardingPage.jsx";
+import FriendsPage from "./pages/FriendsPage.jsx";
 import PageLoader from "./components/PageLoader.jsx";
 import { Toaster } from "react-hot-toast";
 import useAuthUser from "./hooks/useAuthUser.js";
@@ -61,7 +62,7 @@ const App = () => {
           path="/notifications"
           element={
             isAuthenticated && isOnboarded ? (
-              <Layout>
+              <Layout showSidebar={true}>
                 <NotificationsPage />
               </Layout>
             ) : (
@@ -69,7 +70,18 @@ const App = () => {
             )
           }
         />
-
+        <Route
+          path="/friends"
+          element={
+            isAuthenticated && isOnboarded ? (
+              <Layout showSidebar={true}>
+                <FriendsPage />
+              </Layout>
+            ) : (
+              <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+            )
+          }
+        />
         <Route
           path="/call/:id"
           element={
@@ -96,20 +108,15 @@ const App = () => {
         <Route
           path="/onboarding"
           element={
-            isAuthenticated ? (
-              !isOnboarded ? (
-                <OnboardingPage />
-              ) : (
-                <Navigate to="/" />
-              )
+            isAuthenticated && !isOnboarded ? (
+              <OnboardingPage />
             ) : (
-              <Navigate to="/login" />
+              <Navigate to={isAuthenticated ? "/" : "/login"} />
             )
           }
         />
       </Routes>
-
-      <Toaster />
+      <Toaster position="top-center" />
     </div>
   );
 };
